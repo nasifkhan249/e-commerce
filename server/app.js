@@ -5,13 +5,13 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import rateLimit from 'express-rate-limit'
-import {CONNECTION_URI} from "./config/config.js"
+import {CONNECTION_URI,MAX_JSON_SIZE,URL_ENCODED,REQUEST_LIMIT_TIME,REQUEST_LIMIT_NUMBER,WEB_CACHE,dbURL} from "./config/config.js"
 
 
 const app=express();
 app.use(
     cors({
-    origin:"http://localhost:5173",
+    origin:dbURL,
     methods: ["GET","POST","DELETE","PUT"],
     allowedHeaders: [
         "Content-Type",
@@ -24,12 +24,23 @@ app.use(
 })
 );
 app.use(cookieParser());
+
+
 app.use(express.json({ limit: MAX_JSON_SIZE }));
+
 app.use(hpp());
+
 app.use(helmet());
+
+
 app.use(express.urlencoded({extended: URL_ENCODED}));
-const limiter =rateLimit({ windowMs: REQUEST_LIMIT_TIME, max: REQUEST_LIMIT_NUMBER });
+
+const limiter =rateLimit({ 
+    windowMs: REQUEST_LIMIT_TIME, 
+    max: REQUEST_LIMIT_NUMBER 
+});
 app.use(limiter);
+
 app.set('etag', WEB_CACHE);
 
 

@@ -1,36 +1,67 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Route, Routes } from "react-router-dom";
+import Auth from "./components/auth/Auth";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
+import AdminView from "./components/Admin-View/AdminView";
+import Dashboard from "./pages/Admin-View/Dashboard";
+import Features from "./pages/Admin-View/Features";
+import Order from "./pages/Admin-View/Order";
+import Products from "./pages/Admin-View/Products";
+import ShoppingView from "./components/Shopping-View/ShoppingView";
+import NotFound from "./pages/NotFoundPage/NotFound";
+import Home from "./pages/Shopping-View/Home";
+import Listing from "./pages/Shopping-View/Listing";
+import Account from "./pages/Shopping-View/Account";
+import CheckOutPage from "./pages/Shopping-View/CheckOutPage";
+import AuthCheck from "./common/AuthCheck";
 
-function App() {
-  const [count, setCount] = useState(0)
 
+const App = () => {
+  const isAuthenticated=true;
+  const user ={
+    name: 'nasif',
+    role : "admin"
+  };
   return (
-    <>
-      <div>
-        <h1 className='text-3xl font-bold underline'>Hello World</h1>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="flex flex-col overflow-hidden bg-white">
+      <h1>Header component</h1>
 
-export default App
+        <Routes>
+            <Route path="/auth" element={
+              <AuthCheck isAuthenticated={isAuthenticated} user={user}>
+                <Auth/>
+              </AuthCheck>
+            }>
+                <Route path="login" element={<Login/>}/>
+                <Route path="register" element={<Register/>}/>
+            </Route>
+
+            <Route path="/admin" element={
+              <AuthCheck isAuthenticated={isAuthenticated} user={user}>
+                <AdminView/>
+              </AuthCheck>
+            }>
+                <Route path="dashboard" element={<Dashboard/>}/>
+                <Route path="features" element={<Features/>}/>
+                <Route path="order" element={<Order/>}/>
+                <Route path="product" element={<Products/>}/>
+            </Route>
+
+            <Route path="/shop" element={
+              <AuthCheck isAuthenticated={isAuthenticated} user={user}>
+                <ShoppingView/>
+              </AuthCheck>
+            }>
+                <Route path="home" element={<Home/>}/>
+                <Route path="listing" element={<Listing/>}/>
+                <Route path="account" element={<Account/>}/>
+                <Route path="check-out" element={<CheckOutPage/>}/>
+            </Route>
+            <Route path="*" element={<NotFound/>}/>
+        </Routes>
+     
+    </div>
+  )
+};
+
+export default App;
